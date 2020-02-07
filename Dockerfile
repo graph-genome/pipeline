@@ -8,12 +8,16 @@ RUN git clone --recursive https://github.com/vgteam/odgi.git
 
 RUN cd odgi && cmake -DBUILD_STATIC=1 -H. -Bbuild && cmake --build build -- -j 3
 
-RUN pip3 install --upgrade pip && pip3 install -r component_segmentation/requirements.txt
+RUN apt-get update && apt-get install -y time python3-pip 
 
-ENV PATH $PATH:/usr/src/app/
+RUN git clone --depth=1 https://github.com/graph-genome/component_segmentation
+
+RUN pip3 install -r component_segmentation/requirements.txt
+
+ENV PATH $PATH:/usr/src/app/:/usr/src/app/odgi/bin/
 
 ADD . .
 
 EXPOSE 3000
 
-ENTRYPOINT pipeline.sh
+ENTRYPOINT ["pipeline.sh"]
