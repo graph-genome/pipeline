@@ -4,11 +4,11 @@ FROM node:alpine
 
 WORKDIR /usr/src/app
 
-RUN apk add git python3 python3-dev
+RUN apk add git python3 python3-dev bash
 
 RUN git clone https://github.com/graph-genome/component_segmentation
 
-RUN git clone https://github.com/graph-genome/schematize
+RUN git clone https://github.com/graph-genome/Schematize
 
 COPY --from=build /usr/local/bin/odgi /usr/local/bin/ 
 
