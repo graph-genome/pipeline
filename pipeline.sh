@@ -4,7 +4,8 @@ ODGI=odgi
 GFA=$1 
 OG=${GFA%.gfa}.og
 SOG=${GFA%.gfa}.sorted.og
-THREADS=7
+THREADS=12
+w=1000
 
 ## Build the sparse matrix form of the gfa graph
 echo "### odgi build"
@@ -35,7 +36,6 @@ $ODGI sort \
 
 ##
 echo "### odgi bin"
-w=10000
 BIN=${GFA%.gfa}.w${w}.json
 BINPREF=pipeline.sh_04_bin_w${w}
 SRTPREF=pipeline.sh_03_bin
@@ -48,19 +48,20 @@ $ODGI bin \
 1> $BIN \
 2> ${BINPREF}.log &
 
-##
+## Run component segmentation
 echo "### component segmentation"
 SEGPREF=${GFA%.gfa}.seg
 mkdir ${GFA%.gfa}.seg
-git clone https://github.com/graph-genome/component_segmentation
+git clone --depth 1 https://github.com/graph-genome/component_segmentation
 cd component_segmentation
-PYTHONPATH=`pwd`:PYTHONPATH python3 matrixcomponent/segmentation.py -j ../${BIN} -o ../${SEGPREF}
+PYTHONPATH=`pwd`:PYTHONPATH python3 matrixcomponent/segmentation.py -j ../${BIN} -o ../${SEGPREF} \
+> ${SEGPREF}.log 2>&1
 cd ..
 
 ## Run Schematize
 echo "### Run Schematize"
 SCHEMATICBIN=${GFA%.gfa}.w${w}.schematic.json
-git clone https://github.com/graph-genome/Schematize
+git clone --depth 1 https://github.com/graph-genome/Schematize
 cp ${SCHEMATICBIN} Schematize/src/data/
 sed -ie "s/run1.B1phi1.i1.seqwish.w100.schematic.json/${SCHEMATICBIN}/g" Schematize/src/PangenomeSchematic.js
 cd Schematize
