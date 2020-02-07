@@ -5,7 +5,7 @@ GFA=$1
 OG=${GFA%.gfa}.og
 SOG=${GFA%.gfa}.sorted.og
 THREADS=12
-w=1000
+w=${2:-1000}
 
 ## Build the sparse matrix form of the gfa graph
 echo "### odgi build"
