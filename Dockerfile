@@ -1,8 +1,8 @@
-FROM node:alpine
+FROM node:slim
 
 WORKDIR /usr/src/app
 
-RUN apk add git python3 python3-dev bash cmake make g++
+RUN apt-get update && apt-get install -y git python3 python3-dev bash cmake make g++
 
 RUN git clone --recursive https://github.com/vgteam/odgi.git
 
