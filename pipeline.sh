@@ -40,7 +40,7 @@ BIN=${GFA%.gfa}.w${w}.json
 BINPREF=pipeline.sh_04_bin_w${w}
 SRTPREF=pipeline.sh_03_bin
 /usr/bin/time -v -o ${SRTPREF}.time \
-ionice -c2 -n${THREADS} \
+ionice -c2 -n7 \
 $ODGI bin \
 --json \
 --idx=$SOG \
@@ -54,7 +54,7 @@ SEGPREF=${GFA%.gfa}.seg
 mkdir ${GFA%.gfa}.seg
 git clone https://github.com/graph-genome/component_segmentation
 cd component_segmentation
-python3 matrixcomponent/segmentation.py -j ../${BIN} -o ../${SEGPREF}
+PYTHONPATH=`pwd`:PYTHONPATH python3 matrixcomponent/segmentation.py -j ../${BIN} -o ../${SEGPREF}
 cd ..
 
 ## Run Schematize
