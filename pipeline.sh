@@ -57,6 +57,9 @@ python component_segmentation/matrixcomponent/segmentation.py -j ${BIN} -o ${SEG
 
 ## Run Schematize
 echo "### Run Schematize"
-#cp ${SEGPREF}/ 
+SCHEMATICBIN=${GFA%.gfa}.w${w}.schematic.json
+cp ${SCHEMATICBIN} Schematize/src/data/
+sed -i "s/run1.B1phi1.i1.seqwish.w100.schematic.json/${SCHEMATICBIN}/g"
 cd Schematize
+npm install
 npm run start 
