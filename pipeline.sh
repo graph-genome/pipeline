@@ -62,7 +62,7 @@ echo "### Run Schematize"
 SCHEMATICBIN=${GFA%.gfa}.w${w}.schematic.json
 git clone https://github.com/graph-genome/Schematize
 cp ${SCHEMATICBIN} Schematize/src/data/
-sed -e "s/run1.B1phi1.i1.seqwish.w100.schematic.json/${SCHEMATICBIN}/g" Schematize/src/PangenomeSchematic.js > Schematize/src/PangenomeSchematic.js
+sed -ie "s/run1.B1phi1.i1.seqwish.w100.schematic.json/${SCHEMATICBIN}/g" Schematize/src/PangenomeSchematic.js
 cd Schematize
 npm install
 npm build
