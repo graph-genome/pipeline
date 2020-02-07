@@ -8,9 +8,9 @@ THREADS=7
 
 ## Build the sparse matrix form of the gfa graph
 echo "### odgi build"
-BLDPREF=${0%.sh}_01_build
+BLDPREF=pipeline.sh_01_build
 /usr/bin/time -v -o ${BLDPREF}.time \
-ionice -c2 -n${THREADS} \
+ionice -c2 -n7 \
 $ODGI build \
 --progress \
 --gfa=$GFA \
@@ -20,9 +20,9 @@ $ODGI build \
 
 ## Sort paths by 1D sorting
 echo "### odgi sort"
-SRTPREF=${0%.sh}_02_sort
+SRTPREF=pipeline.sh_02_sort
 /usr/bin/time -v -o ${SRTPREF}.time \
-ionice -c2 -n${THREADS} \
+ionice -c2 -n7 \
 $ODGI sort \
 --pipeline="bSnSnS" \
 --sgd-use-paths \
@@ -30,15 +30,15 @@ $ODGI sort \
 --progress \
 --idx=$OG \
 --out=$SOG \
---threads="20"\
+--threads="$THREADS"\
 > ${SRTPREF}.log 2>&1
 
 ##
 echo "### odgi bin"
 w=10000
 BIN=${GFA%.gfa}.w${w}.json
-BINPREF=${0%.sh}_04_bin_w${w}
-SRTPREF=${0%.sh}_03_bin
+BINPREF=pipeline.sh_04_bin_w${w}
+SRTPREF=pipeline.sh_03_bin
 /usr/bin/time -v -o ${SRTPREF}.time \
 ionice -c2 -n${THREADS} \
 $ODGI bin \

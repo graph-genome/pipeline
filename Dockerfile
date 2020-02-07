@@ -8,14 +8,16 @@ RUN apk add git python3 python3-dev bash
 
 RUN git clone https://github.com/graph-genome/component_segmentation
 
-RUN git clone https://github.com/graph-genome/Schematize
+#RUN git clone https://github.com/graph-genome/Schematize
 
 COPY --from=build /usr/local/bin/odgi /usr/local/bin/ 
 
 RUN pip3 install --upgrade pip && pip3 install -r component_segmentation/requirements.txt
 
+ENV PATH $PATH:/usr/src/app/
+
 ADD . .
 
 EXPOSE 3000
 
-ENTRYPOINT /usr/src/app/pipeline.sh
+ENTRYPOINT pipeline.sh
