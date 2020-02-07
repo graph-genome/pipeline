@@ -1,23 +1,23 @@
-FROM quay.io/biocontainers/odgi:0.2--py37h8b12597_0 as build
-
-FROM node:alpine
+FROM node:slim
 
 WORKDIR /usr/src/app
 
-RUN apk add git python3 python3-dev bash
+RUN apt-get update && apt-get install -y git python3 python3-dev bash cmake make g++
 
-RUN git clone https://github.com/graph-genome/component_segmentation
+RUN git clone --recursive https://github.com/vgteam/odgi.git
 
-#RUN git clone https://github.com/graph-genome/Schematize
+RUN cd odgi && cmake -DBUILD_STATIC=1 -H. -Bbuild && cmake --build build -- -j 3
 
-COPY --from=build /usr/local/bin/odgi /usr/local/bin/ 
+RUN apt-get update && apt-get install -y time python3-pip 
 
-RUN pip3 install --upgrade pip && pip3 install -r component_segmentation/requirements.txt
+RUN git clone --depth=1 https://github.com/graph-genome/component_segmentation
 
-ENV PATH $PATH:/usr/src/app/
+RUN pip3 install -r component_segmentation/requirements.txt
+
+ENV PATH $PATH:/usr/src/app/:/usr/src/app/odgi/bin/
 
 ADD . .
 
 EXPOSE 3000
 
-ENTRYPOINT pipeline.sh
+ENTRYPOINT ["pipeline.sh"]
