@@ -52,8 +52,10 @@ $ODGI bin \
 echo "### component segmentation"
 SEGPREF=${GFA%.gfa}.seg
 mkdir ${GFA%.gfa}.seg
-python3 component_segmentation/matrixcomponent/segmentation.py -j ${BIN} -o ${SEGPREF}
-
+git clone https://github.com/graph-genome/component_segmentation
+cd component_segmentation
+python3 matrixcomponent/segmentation.py -j ../${BIN} -o ../${SEGPREF}
+cd ..
 
 ## Run Schematize
 echo "### Run Schematize"
@@ -63,4 +65,5 @@ cp ${SCHEMATICBIN} Schematize/src/data/
 sed -e "s/run1.B1phi1.i1.seqwish.w100.schematic.json/${SCHEMATICBIN}/g" Schematize/src/PangenomeSchematic.js > Schematize/src/PangenomeSchematic.js
 cd Schematize
 npm install
+npm build
 npm run start 
