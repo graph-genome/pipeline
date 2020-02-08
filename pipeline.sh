@@ -55,7 +55,7 @@ mkdir ${GFA%.gfa}.seg
 git clone --depth 1 https://github.com/graph-genome/component_segmentation
 cd component_segmentation
 PYTHONPATH=`pwd`:PYTHONPATH python3 matrixcomponent/segmentation.py -j ../${BIN} -o ../${SEGPREF} \
-> ${SEGPREF}.log 2>&1
+> ../${SEGPREF}.log 2>&1
 cd ..
 
 ## Run Schematize
