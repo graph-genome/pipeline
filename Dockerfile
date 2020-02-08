@@ -2,7 +2,7 @@ FROM python:slim
 
 WORKDIR /usr/src/app
 
-RUN apt-get update && apt-get install -y git nodejs bash cmake make g++ time 
+RUN apt-get update && apt-get install -y git nodejs npm bash cmake make g++ time 
 
 RUN git clone --recursive https://github.com/vgteam/odgi.git
 
