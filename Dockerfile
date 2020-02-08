@@ -1,14 +1,12 @@
-FROM node:slim
+FROM python:slim
 
 WORKDIR /usr/src/app
 
-RUN apt-get update && apt-get install -y git python3 python3-dev bash cmake make g++
+RUN apt-get update && apt-get install -y git nodejs npm bash cmake make g++ time 
 
 RUN git clone --recursive https://github.com/vgteam/odgi.git
 
 RUN cd odgi && cmake -DBUILD_STATIC=1 -H. -Bbuild && cmake --build build -- -j 3
-
-RUN apt-get update && apt-get install -y time python3-pip 
 
 RUN git clone --depth=1 https://github.com/graph-genome/component_segmentation
 
