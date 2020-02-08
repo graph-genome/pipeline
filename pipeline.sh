@@ -46,7 +46,7 @@ $ODGI bin \
 --idx=$SOG \
 --bin-width=${w} \
 1> $BIN \
-2> ${BINPREF}.log &
+2> ${BINPREF}.log
 
 ## Run component segmentation
 echo "### component segmentation"
@@ -54,7 +54,10 @@ SEGPREF=${GFA%.gfa}.seg
 mkdir ${GFA%.gfa}.seg
 git clone --depth 1 https://github.com/graph-genome/component_segmentation
 cd component_segmentation
-PYTHONPATH=`pwd`:PYTHONPATH python3 matrixcomponent/segmentation.py -j ../${BIN} -o ../${SEGPREF} \
+export PYTHONPATH=PYTHONPATH=`pwd`:PYTHONPATH 
+/usr/bin/time -v -o ${SEGPREF}.time \
+ionice -c2 -n7 \
+python3 matrixcomponent/segmentation.py -j ../${BIN} -o ../${SEGPREF} \
 > ../${SEGPREF}.log 2>&1
 cd ..
 
