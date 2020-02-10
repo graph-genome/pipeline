@@ -55,7 +55,7 @@ mkdir ${GFA%.gfa}.seg
 git clone --depth 1 https://github.com/graph-genome/component_segmentation
 cd component_segmentation
 export PYTHONPATH=`pwd`:PYTHONPATH 
-/usr/bin/time -v -o ${SEGPREF}.time \
+/usr/bin/time -v -o ../${SEGPREF}.time \
 ionice -c2 -n7 \
 python3 matrixcomponent/segmentation.py -j ../${BIN} -o ../${SEGPREF} \
 > ../${SEGPREF}.log 2>&1
