@@ -4,7 +4,7 @@ WORKDIR /usr/src/app
 
 RUN apt-get update && apt-get install -y git nodejs npm bash cmake make g++ time 
 
-RUN git clone --recursive https://github.com/vgteam/odgi.git
+RUN git clone --recursive https://github.com/graph-genome/odgi.git
 
 RUN cd odgi && cmake -DBUILD_STATIC=1 -H. -Bbuild && cmake --build build -- -j 3
 
