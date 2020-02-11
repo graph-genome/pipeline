@@ -51,8 +51,12 @@ $ODGI bin \
 ## Run component segmentation
 echo "### component segmentation"
 SEGPREF=${GFA%.gfa}.seg
-mkdir ${GFA%.gfa}.seg
-git clone --depth 1 https://github.com/graph-genome/component_segmentation
+if [ ! -d "${GFA%.gfa}.seg" ]; then
+  mkdir ${GFA%.gfa}.seg
+fi
+if [ ! -d "component_segmentation" ]; then
+  git clone --depth 1 https://github.com/graph-genome/component_segmentation
+fi
 cd component_segmentation
 export PYTHONPATH=`pwd`:PYTHONPATH 
 /usr/bin/time -v -o ../${SEGPREF}.time \
