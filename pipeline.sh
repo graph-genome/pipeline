@@ -9,7 +9,7 @@ w=${2:-1000}
 
 ## Build the sparse matrix form of the gfa graph
 echo "### odgi build"
-BLDPREF=pipeline.sh_01_build
+BLDPREF=${GFA%.gfa}_01_build
 /usr/bin/time -v -o ${BLDPREF}.time \
 ionice -c2 -n7 \
 $ODGI build \
@@ -21,7 +21,7 @@ $ODGI build \
 
 ## Sort paths by 1D sorting
 echo "### odgi sort"
-SRTPREF=pipeline.sh_02_sort
+SRTPREF=${GFA%.gfa}_02_sort
 /usr/bin/time -v -o ${SRTPREF}.time \
 ionice -c2 -n7 \
 $ODGI sort \
@@ -37,8 +37,8 @@ $ODGI sort \
 ##
 echo "### odgi bin"
 BIN=${GFA%.gfa}.w${w}.json
-BINPREF=pipeline.sh_04_bin_w${w}
-SRTPREF=pipeline.sh_03_bin
+BINPREF=${GFA%.gfa}_04_bin_w${w}
+SRTPREF=${GFA%.gfa}_03_bin
 /usr/bin/time -v -o ${SRTPREF}.time \
 ionice -c2 -n7 \
 $ODGI bin \
