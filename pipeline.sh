@@ -90,7 +90,9 @@ fi
 ## Run Schematize
 echo "### Run Schematize"
 SCHEMATICBIN=${GFA%.gfa}.w${w}.schematic.json
-git clone --depth 1 https://github.com/graph-genome/Schematize
+if [ ! -d "Schematize" ]; then
+  git clone --depth 1 https://github.com/graph-genome/Schematize
+fi
 cp ${SCHEMATICBIN} Schematize/src/data/
 sed -ie "s/run1.B1phi1.i1.seqwish.w100.schematic.json/${SCHEMATICBIN}/g" Schematize/src/PangenomeSchematic.js
 cd Schematize
