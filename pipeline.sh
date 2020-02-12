@@ -7,6 +7,8 @@ SOG=${GFA%.gfa}.sorted.og
 THREADS=12
 w=${2:-1000}
 
+echo "### bin-width: ${w}"
+
 ## Build the sparse matrix form of the gfa graph
 echo "### odgi build"
 BLDPREF=${GFA%.gfa}_01_build
@@ -18,6 +20,11 @@ $ODGI build \
 --out=$OG \
 > ${BLDPREF}.log 2>&1
 #--sort \
+
+if [ ! -f $OG ]; then
+  echo "### odgi build failed"
+  exit 255
+fi
 
 ## Sort paths by 1D sorting
 echo "### odgi sort"
@@ -34,6 +41,11 @@ $ODGI sort \
 --threads="$THREADS"\
 > ${SRTPREF}.log 2>&1
 
+if [ ! -f $SOG ]; then
+  echo "### odgi sort failed"
+  exit 255
+fi
+
 ##
 echo "### odgi bin"
 BIN=${GFA%.gfa}.w${w}.json
@@ -47,6 +59,11 @@ $ODGI bin \
 --bin-width=${w} \
 1> $BIN \
 2> ${BINPREF}.log
+
+if [ ! -f $BIN ]; then
+  echo "### odgi bin failed"
+  exit 255
+fi
 
 ## Run component segmentation
 echo "### component segmentation"
@@ -64,6 +81,11 @@ ionice -c2 -n7 \
 python3 matrixcomponent/segmentation.py -j ../${BIN} -o ../${SEGPREF} \
 > ../${SEGPREF}.log 2>&1
 cd ..
+
+if [ ! -f "${GFA%.gfa}.w${w}.schematic.json" ]; then
+  echo "### component segmentation failed"
+  exit 255
+fi
 
 ## Run Schematize
 echo "### Run Schematize"
