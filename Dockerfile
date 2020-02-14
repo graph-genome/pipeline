@@ -14,6 +14,12 @@ RUN pip3 install -r component_segmentation/requirements.txt
 
 ENV PATH $PATH:/usr/src/app/:/usr/src/app/odgi/bin/
 
+RUN git clone --depth=1 https://github.com/graph-genome/Schematize
+
+RUN cd Schematize \
+    npm install \
+    cd ..
+
 ADD . .
 
 EXPOSE 3000
