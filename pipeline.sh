@@ -94,7 +94,8 @@ if [ ! -d "Schematize" ]; then
   git clone --depth 1 https://github.com/graph-genome/Schematize
 fi
 cp ${SCHEMATICBIN} Schematize/src/data/
-sed -E "s|run1.B1phi1.i1.seqwish.w100.schematic.json|${SCHEMATICBIN:5}|g" Schematize/src/PangenomeSchematic.js > Schematize/src/PangenomeSchematic2.js
+BASENAME=`basename ${SCHEMATICBIN}`
+sed -E "s|run1.B1phi1.i1.seqwish.w100.schematic.json|${BASENAME}|g" Schematize/src/PangenomeSchematic.js > Schematize/src/PangenomeSchematic2.js
 mv Schematize/src/PangenomeSchematic2.js Schematize/src/PangenomeSchematic.js
 cd Schematize
 npm build
