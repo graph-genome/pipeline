@@ -82,14 +82,16 @@ python3 matrixcomponent/segmentation.py -j ../${BIN} -b ${w} -o ../${SEGPREF} \
 > ../${SEGPREF}.log 2>&1
 cd ..
 
-if [ ! -f "${GFA%.gfa}.w${w}.schematic.json" ]; then
+NOF=$(ls "{GFA%.gfa}.w${w}/*.schematic.json" | wc -l)
+
+if [ $NOF -lt 1 ]; then
   echo "### component segmentation failed"
   exit 255
 fi
 
 ## Run Schematize
 echo "### Schematize"
-SCHEMATICBIN=${GFA%.gfa}.w${w}.schematic.json
+SCHEMATICBIN=${GFA%.gfa}.w${w}/chunk0000_bin${w}.schematic.json
 if [ ! -d "Schematize" ]; then
   git clone --depth 1 https://github.com/graph-genome/Schematize
   npm install
