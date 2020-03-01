@@ -84,7 +84,7 @@ python3 matrixcomponent/segmentation.py -j ../${BIN} -b ${w} -o ../${SEGPREF} \
 > ../${SEGPREF}.log 2>&1
 cd ..
 
-NOF=$(ls "{GFA%.gfa}.w${w}/*.schematic.json" | wc -l)
+NOF=$(ls ${GFA%.gfa}.w${w}/*.schematic.json | wc -l)
 
 if [ $NOF -lt 1 ]; then
   echo "### component segmentation failed"
