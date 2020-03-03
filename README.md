@@ -11,7 +11,9 @@ cp /pass/to/your/data.gfa .
 docker build -t pipeline .
 docker run -ti --rm --publish=3000:3000 --volume=`pwd`:/usr/src/app/data pipeline data/data.gfa
 docker run -ti --rm --publish=3000:3000 --volume=`pwd`:/usr/src/app/data pipeline data/data.gfa 10000 
-  # With the last argument you can change the bin width.
+  # With the second argument you can change the bin width.
+docker run -ti --rm --publish=3000:3000 --volume=`pwd`:/usr/src/app/data pipeline data/data.gfa 10000 00 01 
+  # With the third and fourth argument you can change the start and end chunk.
 ```
 
 Access to http://localhost:3000/.

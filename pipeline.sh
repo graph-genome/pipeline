@@ -6,6 +6,8 @@ OG=${GFA%.gfa}.og
 SOG=${GFA%.gfa}.sorted.og
 THREADS=12
 w=${2:-1000}
+STARTCHUNK=${3:-00}
+ENDCHUNK=${4:-01}
 
 echo "### bin-width: ${w}"
 
@@ -82,22 +84,28 @@ python3 matrixcomponent/segmentation.py -j ../${BIN} -b ${w} -o ../${SEGPREF} \
 > ../${SEGPREF}.log 2>&1
 cd ..
 
-if [ ! -f "${GFA%.gfa}.w${w}.schematic.json" ]; then
+NOF=$(ls ${GFA%.gfa}.w${w}/*.schematic.json | wc -l)
+
+if [ $NOF -lt 1 ]; then
   echo "### component segmentation failed"
   exit 255
 fi
 
 ## Run Schematize
 echo "### Schematize"
-SCHEMATICBIN=${GFA%.gfa}.w${w}.schematic.json
+#SCHEMATICBIN=${GFA%.gfa}.w${w}/chunk0000_bin${w}.schematic.json
+SCHEMATIC=${GFA%.gfa}.w${w}
 if [ ! -d "Schematize" ]; then
   git clone --depth 1 https://github.com/graph-genome/Schematize
   npm install
 fi
-cp ${SCHEMATICBIN} Schematize/src/data/
-BASENAME=`basename ${SCHEMATICBIN}`
-sed -E "s|run1.B1phi1.i1.seqwish.w100.schematic.json|${BASENAME}|g" Schematize/src/PangenomeSchematic.js > Schematize/src/PangenomeSchematic2.js
-mv Schematize/src/PangenomeSchematic2.js Schematize/src/PangenomeSchematic.js
+cp -r ${SCHEMATIC} Schematize/public/test_data
+BASENAME=`basename ${SCHEMATIC}`
+#sed -E "s|run1.B1phi1.i1.seqwish.w100.schematic.json|${BASENAME}|g" Schematize/src/PangenomeSchematic.js > Schematize/src/PangenomeSchematic2.js
+sed -E "s|Athaliana_12_individuals_w100000/chunk00_bin100000.schematic.json|${BASENAME}/chunk${STARTCHUNK}_bin${w}.schematic.json|g" Schematize/src/ViewportInputsStore.js > Schematize/src/ViewportInputsStore3.js 
+sed -E "s|Athaliana_12_individuals_w100000/chunk01_bin100000.schematic.json|${BASENAME}/chunk${ENDCHUNK}_bin${w}.schematic.json|g" Schematize/src/ViewportInputsStore3.js > Schematize/src/ViewportInputsStore4.js 
+sed -E "s|Athaliana_12_individuals_w100000|${BASENAME}|g" Schematize/src/ViewportInputsStore4.js > Schematize/src/ViewportInputsStore2.js
+mv Schematize/src/ViewportInputsStore2.js Schematize/src/ViewportInputsStore.js
 cd Schematize
 npm run-script build
 npm run start 
