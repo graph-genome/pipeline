@@ -97,7 +97,9 @@ echo "### Schematize"
 SCHEMATIC=${GFA%.gfa}.w${w}
 if [ ! -d "Schematize" ]; then
   git clone --depth 1 https://github.com/graph-genome/Schematize
+  cd Schematize
   npm install
+  cd ..
 fi
 cp -r ${SCHEMATIC} Schematize/public/test_data
 BASENAME=`basename ${SCHEMATIC}`
