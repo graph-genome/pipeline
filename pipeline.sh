@@ -8,6 +8,7 @@ THREADS=12
 w=${2:-1000}
 STARTCHUNK=${3:-00}
 ENDCHUNK=${4:-01}
+SORT=${5:-bSnSnS}
 
 echo "### bin-width: ${w}"
 
@@ -34,7 +35,7 @@ SRTPREF=${GFA%.gfa}_02_sort
 /usr/bin/time -v -o ${SRTPREF}.time \
 ionice -c2 -n7 \
 $ODGI sort \
---pipeline="bSnSnS" \
+--pipeline="$SORT" \
 --sgd-use-paths \
 --paths-max \
 --progress \
