@@ -31,10 +31,10 @@ Access to http://localhost:3000/.
 
 ## Customization
 
-You can change the options on odgi / 
+You can change the options on odgi / Schematize
 
 * gfa name (first argument, mandatory)
-* the bin width on `odgi` (second argument, optional, default:1000)
-* the start and end chunk on `Schematize` (third and fourth argument, optional, default: 00-01)
-* the sort option on `odgi sort` (fifth argument, optional, default: bSnSnS)
+* the bin width on `odgi` (second argument, optional, default: `1000`)
+* the start and end chunk on `Schematize` (third and fourth argument, optional, default: `00-01`)
+* the sort option on `odgi sort` (fifth argument, optional, default: `bSnSnS`)
 
