@@ -4,7 +4,7 @@ set -e # abort on error
 
 function usage
 {
-  echo "usage: pipeline.sh GFA_FILE [-b 00 -e 01 -s S -w 10000 -h]"
+  echo "usage: pipeline.sh GFA_FILE [-b 00 -e 01 -s bSnSnS -w 1000 -h]"
   echo "   ";
   echo "  -b | --begin  : The start bin";
   echo "  -e | --end    : The end bin";
