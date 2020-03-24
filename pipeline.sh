@@ -4,13 +4,14 @@ set -e # abort on error
 
 function usage
 {
-  echo "usage: pipeline.sh GFA_FILE [-b 00 -e 01 -s bSnSnS -w 1000 -h]"
+  echo "usage: pipeline.sh GFA_FILE [-b 00 -e 01 -s bSnSnS -w 1000 -t 12 -h]"
   echo "   ";
-  echo "  -b | --begin  : The start bin";
-  echo "  -e | --end    : The end bin";
-  echo "  -s | --sort   : Sort option on odgi";
-  echo "  -w | --width  : Bin width on odgi";
-  echo "  -h | --help   : This message";
+  echo "  -b | --begin   : The start bin";
+  echo "  -e | --end     : The end bin";
+  echo "  -s | --sort    : Sort option on odgi";
+  echo "  -w | --width   : Bin width on odgi";
+  echo "  -t | --threads : Threads on odgi";
+  echo "  -h | --help    : This message";
 }
 
 function parse_args
@@ -25,6 +26,7 @@ function parse_args
           -e | --end )                  end_bin="$2";            shift;;
           -s | --sort )                 sort_opt="$2";           shift;;
           -w | --width )                width_opt="$2";          shift;;
+          -t | --threads )              threads_opt="$2";        shift;;
           -h | --help )                 usage;                   exit;; # quit and show usage
           * )                           args+=("$1")             # if no match, add it to the positional args
       esac
@@ -51,7 +53,7 @@ ODGI=odgi
 GFA=gfa_path 
 OG=${GFA%.gfa}.og
 SOG=${GFA%.gfa}.sorted.og
-THREADS=12
+THREADS=${threads_opt:-12}
 w=${width_opt:-1000}
 STARTCHUNK=${begin_bin:-00}
 ENDCHUNK=${end_bin:-01}

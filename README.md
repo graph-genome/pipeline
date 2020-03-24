@@ -37,6 +37,7 @@ You can change the options on odgi / Schematize.
 * `-w`: the bin width on `odgi` (optional, default: `1000`)
 * `-b` and `-e`: the start and end chunk on `Schematize` (optional, default: `00--01`)
 * `-s`: the sort option on `odgi sort` (optional, default: `bSnSnS`)
+* `-t`: the threads option on `odgi` (optional, default: `12`)
 
 The full list of the argment is as follows:
 
