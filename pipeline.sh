@@ -1,16 +1,65 @@
 #!/bin/bash
 
+set -e # abort on error
+
+function usage
+{
+  echo "usage: pipeline.sh GFA_FILE [-b 00 -e 01 -s S -w 10000 -h]"
+  echo "   ";
+  echo "  -b | --begin  : The start bin";
+  echo "  -e | --end    : The end bin";
+  echo "  -s | --sort   : Sort option on odgi";
+  echo "  -w | --width  : Bin width on odgi";
+  echo "  -h | --help   : This message";
+}
+
+function parse_args
+{
+  # positional args
+  args=()
+
+  # named args
+  while [ "$1" != "" ]; do
+      case "$1" in
+          -b | --begin )                begin_bin="$2";          shift;;
+          -e | --end )                  end_bin="$2";            shift;;
+          -s | --sort )                 sort_opt="$2";           shift;;
+          -w | --width )                width_opt="$2";          shift;;
+          -h | --help )                 usage;                   exit;; # quit and show usage
+          * )                           args+=("$1")             # if no match, add it to the positional args
+      esac
+      shift # move to next kv pair
+  done
+
+  # restore positional args
+  set -- "${args[@]}"
+
+  # set positionals to vars
+  gfa_path="${args[0]}"
+
+  # validate required args
+  if [[ -z "$gfa_path" ]]; then
+      echo "Invalid arguments"
+      usage
+      exit;
+  fi
+}
+
+parse_args "$@"
+
 ODGI=odgi
-GFA=$1 
+GFA=gfa_path 
 OG=${GFA%.gfa}.og
 SOG=${GFA%.gfa}.sorted.og
 THREADS=12
-w=${2:-1000}
-STARTCHUNK=${3:-00}
-ENDCHUNK=${4:-01}
-SORT=${5:-bSnSnS}
+w=${width_opt:-1000}
+STARTCHUNK=${begin_bin:-00}
+ENDCHUNK=${end_bin:-01}
+SORT=${sort_opt:-bSnSnS}
 
 echo "### bin-width: ${w}"
+echo "### chunk: ${STARTCHUNK}--${ENDCHUNK}"
+echo "### sort-option: ${SORT}"
 
 ## Build the sparse matrix form of the gfa graph
 echo "### odgi build"
