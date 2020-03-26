@@ -53,6 +53,7 @@ ODGI=odgi
 GFA=$gfa_path 
 OG=${GFA%.gfa}.og
 SOG=${GFA%.gfa}.sorted.og
+XP=${GFA%.gfa}.og.xp
 THREADS=${threads_opt:-12}
 w=${width_opt:-1000}
 STARTCHUNK=${begin_bin:-00}
@@ -119,6 +120,22 @@ if [ ! -f $BIN ]; then
   exit 255
 fi
 
+## Create path index
+echo "### odgi pathindex"
+BLDPREF=${GFA%.gfa}_05_pathindex
+/usr/bin/time -v -o ${BLDPREF}.time \
+ionice -c2 -n7 \
+$ODGI path_index \
+--idx=$OG \
+--out=$XP \
+> ${BLDPREF}.log 2>&1
+
+if [ ! -f $XP ]; then
+  echo "### odgi pathindex failed"
+  exit 255
+fi
+
+
 ## Run component segmentation
 echo "### component segmentation"
 SEGPREF=${GFA%.gfa}.seg
@@ -142,6 +159,11 @@ if [ $NOF -lt 1 ]; then
   echo "### component segmentation failed"
   exit 255
 fi
+
+## Run PathIndex Server
+echo "### PathIndex Server"
+
+$ODGI server -i $XP -p 3010 -a "0.0.0.0" &
 
 ## Run Schematize
 echo "### Schematize"

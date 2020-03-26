@@ -1,0 +1,22 @@
+version: '2.2'
+services:
+  schematize:
+    ports:
+     - "3000:3000"
+    dockerfile: Dockerfile
+    links:
+     - odgi:odgi
+    networks:
+     - server
+    command:
+     - 
+  odgi:
+    ports:
+     - "3001:3001"    
+    bockerfile: Dockerfile.odgi
+    networks:
+     - server
+    command:
+     - 
+networks:
+  server:
