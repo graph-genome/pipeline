@@ -181,7 +181,8 @@ BASENAME=`basename ${SCHEMATIC}`
 sed -E "s|Athaliana_12_individuals_w100000/chunk00_bin100000.schematic.json|${BASENAME}/chunk${STARTCHUNK}_bin${w}.schematic.json|g" Schematize/src/ViewportInputsStore.js > Schematize/src/ViewportInputsStore3.js 
 sed -E "s|Athaliana_12_individuals_w100000/chunk01_bin100000.schematic.json|${BASENAME}/chunk${ENDCHUNK}_bin${w}.schematic.json|g" Schematize/src/ViewportInputsStore3.js > Schematize/src/ViewportInputsStore4.js 
 sed -E "s|Athaliana_12_individuals_w100000|${BASENAME}|g" Schematize/src/ViewportInputsStore4.js > Schematize/src/ViewportInputsStore2.js
-mv Schematize/src/ViewportInputsStore2.js Schematize/src/ViewportInputsStore.js
+sed -E "s|193.196.29.24|0.0.0.0|g" Schematize/src/ViewportInputsStore2.js > Schematize/src/ViewportInputsStore1.js
+mv Schematize/src/ViewportInputsStore1.js Schematize/src/ViewportInputsStore.js
 cd Schematize
 npm run-script build
 npm run start 
