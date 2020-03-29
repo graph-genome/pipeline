@@ -125,7 +125,7 @@ echo "### odgi pathindex"
 BLDPREF=${GFA%.gfa}_05_pathindex
 /usr/bin/time -v -o ${BLDPREF}.time \
 ionice -c2 -n7 \
-$ODGI path_index \
+$ODGI pathindex \
 --idx=$OG \
 --out=$XP \
 > ${BLDPREF}.log 2>&1
