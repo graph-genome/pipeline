@@ -10,4 +10,4 @@ RUN cd odgi && cmake -DBUILD_STATIC=1 -H. -Bbuild && cmake --build build -- -j 3
 
 EXPOSE 3001
 
-ENTRYPOINT ["odgi/odgi", "server", "-p", "3001", "-a", "0.0.0.0", "-i"]
+ENTRYPOINT ["odgi", "server", "-p", "3001", "-a", "0.0.0.0", "-i"]
