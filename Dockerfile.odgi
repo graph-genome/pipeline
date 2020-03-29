@@ -8,6 +8,8 @@ RUN git clone --recursive https://github.com/vgteam/odgi.git
 
 RUN cd odgi && cmake -DBUILD_STATIC=1 -H. -Bbuild && cmake --build build -- -j 3
 
+ENV PATH $PATH:/usr/src/app/:/usr/src/app/odgi/bin/
+
 EXPOSE 3001
 
 ENTRYPOINT ["odgi", "server", "-p", "3001", "-a", "0.0.0.0", "-i"]
