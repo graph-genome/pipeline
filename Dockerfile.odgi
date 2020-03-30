@@ -10,6 +10,6 @@ RUN cd odgi && cmake -H. -Bbuild && cmake --build build -- -j 3
 
 ENV PATH $PATH:/usr/src/app/:/usr/src/app/odgi/bin/
 
-EXPOSE 3001
+EXPOSE 3010
 
-ENTRYPOINT ["odgi", "server", "-p", "3001", "-a", "0.0.0.0", "-i"]
+ENTRYPOINT ["odgi", "server", "-p", "3010", "-a", "0.0.0.0", "-i"]
