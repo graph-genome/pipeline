@@ -6,7 +6,7 @@ RUN apt-get update && apt-get install -y git nodejs npm bash cmake make g++ time
 
 RUN git clone --recursive https://github.com/vgteam/odgi.git
 
-RUN cd odgi && cmake -DBUILD_STATIC=1 -H. -Bbuild && cmake --build build -- -j 3
+RUN cd odgi && cmake -H. -Bbuild && cmake --build build -- -j 3 # cmake -DBUILD_STATIC=1 -H. -Bbuild && cmake --build build -- -j 3
 
 RUN git clone --depth=1 https://github.com/graph-genome/component_segmentation
 
