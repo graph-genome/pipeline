@@ -3,23 +3,24 @@ services:
   schematize:
     ports:
      - "3000:3000"
-     - "3010:3010"
-    dockerfile: Dockerfile
+    dockerfile: Dockerfile.schematize
+    volumes:
+     - "./:/data" 
     links:
      - odgi:odgi
     networks:
      - server
     command:
-     - 
+     - "data/data.og" 
   odgi:
     ports:
-     - "3001:3001"    
-    bockerfile: Dockerfile.odgi
-    volume:
-     - "" 
+     - "3010:3010"    
+    dockerfile: Dockerfile.odgi
+    volumes:
+     - "./:/data" 
     networks:
      - server
     command:
-     - "data/" 
+     - "data/data.og.xg" 
 networks:
   server:
