@@ -50,7 +50,7 @@ function parse_args
 parse_args "$@"
 
 ODGI=odgi
-GFA=gfa_path 
+GFA=$gfa_path 
 OG=${GFA%.gfa}.og
 SOG=${GFA%.gfa}.sorted.og
 THREADS=${threads_opt:-12}
