@@ -11,6 +11,7 @@ function usage
   echo "  -s | --sort    : Sort option on odgi";
   echo "  -w | --width   : Bin width on odgi";
   echo "  -t | --threads : Threads on odgi";
+  echo "  -p | --port    : Pathindex port";
   echo "  -h | --help    : This message";
 }
 
@@ -27,6 +28,7 @@ function parse_args
           -s | --sort )                 sort_opt="$2";           shift;;
           -w | --width )                width_opt="$2";          shift;;
           -t | --threads )              threads_opt="$2";        shift;;
+          -p | --port )                 port="$2";               shift;;
           -h | --help )                 usage;                   exit;; # quit and show usage
           * )                           args+=("$1")             # if no match, add it to the positional args
       esac
@@ -54,6 +56,7 @@ GFA=$gfa_path
 OG=${GFA%.gfa}.og
 SOG=${GFA%.gfa}.sorted.og
 XP=${GFA%.gfa}.og.xp
+PORT=${port:-3030}
 THREADS=${threads_opt:-12}
 w=${width_opt:-1000}
 STARTCHUNK=${begin_bin:-00}
@@ -163,7 +166,7 @@ fi
 ## Run PathIndex Server
 echo "### PathIndex Server"
 
-$ODGI server -i $XP -p 3010 -a "0.0.0.0" &
+$ODGI server -i $XP -p $PORT -a "0.0.0.0" &
 
 ## Run Schematize
 echo "### Schematize"
@@ -181,7 +184,7 @@ BASENAME=`basename ${SCHEMATIC}`
 sed -E "s|Athaliana_12_individuals_w100000/chunk00_bin100000.schematic.json|${BASENAME}/chunk${STARTCHUNK}_bin${w}.schematic.json|g" Schematize/src/ViewportInputsStore.js > Schematize/src/ViewportInputsStore3.js 
 sed -E "s|Athaliana_12_individuals_w100000/chunk01_bin100000.schematic.json|${BASENAME}/chunk${ENDCHUNK}_bin${w}.schematic.json|g" Schematize/src/ViewportInputsStore3.js > Schematize/src/ViewportInputsStore4.js 
 sed -E "s|Athaliana_12_individuals_w100000|${BASENAME}|g" Schematize/src/ViewportInputsStore4.js > Schematize/src/ViewportInputsStore2.js
-sed -E "s|193.196.29.24|0.0.0.0|g" Schematize/src/ViewportInputsStore2.js > Schematize/src/ViewportInputsStore1.js
+sed -E "s|193.196.29.24:3010|0.0.0.0:${PORT}|g" Schematize/src/ViewportInputsStore2.js > Schematize/src/ViewportInputsStore1.js
 mv Schematize/src/ViewportInputsStore1.js Schematize/src/ViewportInputsStore.js
 cd Schematize
 npm run-script build
