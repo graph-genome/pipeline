@@ -22,4 +22,6 @@ ADD . .
 
 EXPOSE 3000
 
+EXPOSE 3010
+
 ENTRYPOINT ["pipeline.sh"]

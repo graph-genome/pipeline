@@ -3,6 +3,7 @@ services:
   schematize:
     ports:
      - "3000:3000"
+     - "3010:3010"
     dockerfile: Dockerfile
     links:
      - odgi:odgi
@@ -14,9 +15,11 @@ services:
     ports:
      - "3001:3001"    
     bockerfile: Dockerfile.odgi
+    volume:
+     - "" 
     networks:
      - server
     command:
-     - 
+     - "data/" 
 networks:
   server:
