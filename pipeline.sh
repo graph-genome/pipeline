@@ -12,6 +12,7 @@ function usage
   echo "  -w | --width   : Bin width on odgi";
   echo "  -t | --threads : Threads on odgi";
   echo "  -p | --port    : Pathindex port";
+  echo "  -h | --host    : Pathindex host";
   echo "  -h | --help    : This message";
 }
 
@@ -29,6 +30,7 @@ function parse_args
           -w | --width )                width_opt="$2";          shift;;
           -t | --threads )              threads_opt="$2";        shift;;
           -p | --port )                 port="$2";               shift;;
+          -i | --host )                 host="$2";               shift;;
           -h | --help )                 usage;                   exit;; # quit and show usage
           * )                           args+=("$1")             # if no match, add it to the positional args
       esac
@@ -62,6 +64,7 @@ w=${width_opt:-1000}
 STARTCHUNK=${begin_bin:-00}
 ENDCHUNK=${end_bin:-01}
 SORT=${sort_opt:-bSnSnS}
+HOST=${host:-localhost}
 
 echo "### bin-width: ${w}"
 echo "### chunk: ${STARTCHUNK}--${ENDCHUNK}"
@@ -184,7 +187,7 @@ BASENAME=`basename ${SCHEMATIC}`
 sed -E "s|Athaliana_12_individuals_w100000/chunk00_bin100000.schematic.json|${BASENAME}/chunk${STARTCHUNK}_bin${w}.schematic.json|g" Schematize/src/ViewportInputsStore.js > Schematize/src/ViewportInputsStore3.js 
 sed -E "s|Athaliana_12_individuals_w100000/chunk01_bin100000.schematic.json|${BASENAME}/chunk${ENDCHUNK}_bin${w}.schematic.json|g" Schematize/src/ViewportInputsStore3.js > Schematize/src/ViewportInputsStore4.js 
 sed -E "s|Athaliana_12_individuals_w100000|${BASENAME}|g" Schematize/src/ViewportInputsStore4.js > Schematize/src/ViewportInputsStore2.js
-sed -E "s|193.196.29.24:3010|0.0.0.0:${PORT}|g" Schematize/src/ViewportInputsStore2.js > Schematize/src/ViewportInputsStore1.js
+sed -E "s|193.196.29.24:3010|${HOST}:${PORT}|g" Schematize/src/ViewportInputsStore2.js > Schematize/src/ViewportInputsStore1.js
 mv Schematize/src/ViewportInputsStore1.js Schematize/src/ViewportInputsStore.js
 cd Schematize
 npm run-script build
