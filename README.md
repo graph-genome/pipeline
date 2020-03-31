@@ -21,9 +21,7 @@ cp /pass/to/your/data.gfa .
 docker run -ti --rm --publish=3000:3000 --volume=`pwd`:/usr/src/app/data pipeline data/data.gfa
 docker run -ti --rm --publish=3000:3000 --volume=`pwd`:/usr/src/app/data pipeline data/data.gfa -w 10000 
   # With -w argument you can change the bin width.
-docker run -ti --rm --publish=3000:3000 --volume=`pwd`:/usr/src/app/data pipeline data/data.gfa -w 10000 -b 00 -e 01 
-  # With -b end -e argument you can change the start and end chunk.
-docker run -ti --rm --publish=3000:3000 --volume=`pwd`:/usr/src/app/data pipeline data/data.gfa -w 10000 -b 00 -e 01 -s Sn
+docker run -ti --rm --publish=3000:3000 --volume=`pwd`:/usr/src/app/data pipeline data/data.gfa -w 10000 -s Sn
   # With -s argument you can change the sort option.
 ```
 
@@ -37,7 +35,7 @@ Pathindex server works on the same container of Schematize at port 3010. Users n
 docker run -ti --rm \
   --publish=3000:3000 # For Schematize server
   --publish=3010:3010 # For odgi server (*)
-  --volume=`pwd`:/usr/src/app/data pipeline data/data.gfa -w 10000 -b 00 -e 01 -s Sn \
+  --volume=`pwd`:/usr/src/app/data pipeline data/data.gfa -w 10000 -s Sn \
   --port 3010 # The host's port to expose the odgi server, the same as the host port of (*).
   --host localhost # The host name to expose the odgi server.
 ```
@@ -48,7 +46,7 @@ If you change the server to `example.com:3020` to expose odgi server, then
 docker run -ti --rm \
   --publish=3000:3000 # For Schematize server
   --publish=3020:3010 # For odgi server (*)
-  --volume=`pwd`:/usr/src/app/data pipeline data/data.gfa -w 10000 -b 00 -e 01 -s Sn \
+  --volume=`pwd`:/usr/src/app/data pipeline data/data.gfa -w 10000 -s Sn \
   --port 3020 # The host's port to expose the odgi server, the same as the host port of (*).
   --host "example.com" # The host name to expose the odgi server.
 ```
