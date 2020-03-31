@@ -159,7 +159,7 @@ python3 matrixcomponent/segmentation.py -j ../${BIN} --cells-per-file $((ENDCHUN
 > ../${SEGPREF}.log 2>&1
 cd ..
 
-NOF=$(ls ${GFA%.gfa}.w${w}/*.schematic.json | wc -l)
+NOF=$(ls ${GFA%.gfa}.seg/*.schematic.json | wc -l)
 
 if [ $NOF -lt 1 ]; then
   echo "### component segmentation failed"
@@ -173,8 +173,7 @@ $ODGI server -i $XP -p 3010 -a "0.0.0.0" &
 
 ## Run Schematize
 echo "### Schematize"
-#SCHEMATICBIN=${GFA%.gfa}.w${w}/chunk0000_bin${w}.schematic.json
-SCHEMATIC=${GFA%.gfa}.w${w}
+SCHEMATIC=${GFA%.gfa}.seg
 if [ ! -d "Schematize" ]; then
   git clone --depth 1 https://github.com/graph-genome/Schematize
   cd Schematize
