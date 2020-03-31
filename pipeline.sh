@@ -6,14 +6,15 @@ function usage
 {
   echo "usage: pipeline.sh GFA_FILE [-b 00 -e 01 -s bSnSnS -w 1000 -t 12 -h]"
   echo "   ";
-  echo "  -b | --begin   : The start bin";
-  echo "  -e | --end     : The end bin";
-  echo "  -s | --sort    : Sort option on odgi";
-  echo "  -w | --width   : Bin width on odgi";
-  echo "  -t | --threads : Threads on odgi";
-  echo "  -p | --port    : Pathindex port";
-  echo "  -h | --host    : Pathindex host";
-  echo "  -h | --help    : This message";
+  echo "  -b | --begin          : The start bin";
+  echo "  -e | --end            : The end bin";
+  echo "  -s | --sort           : Sort option on odgi";
+  echo "  -w | --width          : Bin width on odgi";
+  echo "  -c | --cells-per-file : Cells per file on component_segmentation";
+  echo "  -t | --threads        : Threads on odgi";
+  echo "  -p | --port           : Pathindex port";
+  echo "  -h | --host           : Pathindex host";
+  echo "  -h | --help           : This message";
 }
 
 function parse_args
@@ -28,6 +29,7 @@ function parse_args
           -e | --end )                  end_bin="$2";            shift;;
           -s | --sort )                 sort_opt="$2";           shift;;
           -w | --width )                width_opt="$2";          shift;;
+          -c | --cells-per-file )       cpf="$2";                shift;;
           -t | --threads )              threads_opt="$2";        shift;;
           -p | --port )                 port="$2";               shift;;
           -i | --host )                 host="$2";               shift;;
@@ -63,6 +65,7 @@ THREADS=${threads_opt:-12}
 w=${width_opt:-1000}
 STARTCHUNK=${begin_bin:-00}
 ENDCHUNK=${end_bin:-01}
+CPF=${cpf:-${ENDCHUNK}}
 SORT=${sort_opt:-bSnSnS}
 HOST=${host:-localhost}
 
@@ -155,7 +158,7 @@ cd component_segmentation
 export PYTHONPATH=`pwd`:PYTHONPATH 
 /usr/bin/time -v -o ../${SEGPREF}.time \
 ionice -c2 -n7 \
-python3 matrixcomponent/segmentation.py -j ../${BIN} --cells-per-file $((ENDCHUNK+1)) -o ../${SEGPREF} \
+python3 matrixcomponent/segmentation.py -j ../${BIN} --cells-per-file ${CPF} -o ../${SEGPREF} \
 > ../${SEGPREF}.log 2>&1
 cd ..
 
