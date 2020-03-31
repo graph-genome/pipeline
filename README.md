@@ -42,6 +42,17 @@ docker run -ti --rm \
   --host localhost # The host name to expose the odgi server.
 ```
 
+If you change the server to `example.com:3020` to expose odgi server, then
+
+```bash
+docker run -ti --rm \
+  --publish=3000:3000 # For Schematize server
+  --publish=3020:3010 # For odgi server (*)
+  --volume=`pwd`:/usr/src/app/data pipeline data/data.gfa -w 10000 -b 00 -e 01 -s Sn \
+  --port 3020 # The host's port to expose the odgi server, the same as the host port of (*).
+  --host "example.com" # The host name to expose the odgi server.
+```
+
 ## Customization
 
 You can change the options on odgi / Schematize.
