@@ -58,7 +58,7 @@ GFA=$gfa_path
 OG=${GFA%.gfa}.og
 SOG=${GFA%.gfa}.sorted.og
 XP=${GFA%.gfa}.og.xp
-PORT=${port:-3030}
+PORT=${port:-3010}
 THREADS=${threads_opt:-12}
 w=${width_opt:-1000}
 STARTCHUNK=${begin_bin:-00}
@@ -169,7 +169,7 @@ fi
 ## Run PathIndex Server
 echo "### PathIndex Server"
 
-$ODGI server -i $XP -p $PORT -a "0.0.0.0" &
+$ODGI server -i $XP -p 3010 -a "0.0.0.0" &
 
 ## Run Schematize
 echo "### Schematize"
