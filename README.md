@@ -57,11 +57,11 @@ You can change the options on odgi / Schematize.
 
 * gfa name (first argument, mandatory)
 * `-w`: the bin width on `odgi` (optional, default: `1000`)
-* `-b` and `-e`: the start and end chunk on `Schematize` (optional, default: `00--01`)
 * `-s`: the sort option on `odgi sort` (optional, default: `bSnSnS`)
 * `-t`: the threads option on `odgi` (optional, default: `12`)
+* `-c`: the cells-per-file option on `component_segmentation` (optional) 
 
-The full list of the argment is as follows:
+The full list of the argument is as follows:
 
 ```bash
 docker run -ti --rm --publish=3000:3000 --volume=`pwd`:/usr/src/app/data pipeline -h
