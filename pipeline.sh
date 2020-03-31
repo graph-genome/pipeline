@@ -184,9 +184,9 @@ fi
 cp -r ${SCHEMATIC} Schematize/public/test_data
 BASENAME=`basename ${SCHEMATIC}`
 #sed -E "s|run1.B1phi1.i1.seqwish.w100.schematic.json|${BASENAME}|g" Schematize/src/PangenomeSchematic.js > Schematize/src/PangenomeSchematic2.js
-sed -E "s|Athaliana_12_individuals_w100000/chunk00_bin100000.schematic.json|${BASENAME}/chunk${STARTCHUNK}_bin${w}.schematic.json|g" Schematize/src/ViewportInputsStore.js > Schematize/src/ViewportInputsStore3.js 
-sed -E "s|Athaliana_12_individuals_w100000/chunk01_bin100000.schematic.json|${BASENAME}/chunk${ENDCHUNK}_bin${w}.schematic.json|g" Schematize/src/ViewportInputsStore3.js > Schematize/src/ViewportInputsStore4.js 
-sed -E "s|Athaliana_12_individuals_w100000|${BASENAME}|g" Schematize/src/ViewportInputsStore4.js > Schematize/src/ViewportInputsStore2.js
+sed -E "s|run1.B1phi1.i1.seqwish.w100/chunk0_bin100.schematic.json|${BASENAME}/chunk${STARTCHUNK}_bin${w}.schematic.json|g" Schematize/src/ViewportInputsStore.js > Schematize/src/ViewportInputsStore3.js 
+sed -E "s|run1.B1phi1.i1.seqwish.w100/chunk1_bin100.schematic.json|${BASENAME}/chunk${ENDCHUNK}_bin${w}.schematic.json|g" Schematize/src/ViewportInputsStore3.js > Schematize/src/ViewportInputsStore4.js 
+sed -E "s|run1.B1phi1.i1.seqwish.w100|${BASENAME}|g" Schematize/src/ViewportInputsStore4.js > Schematize/src/ViewportInputsStore2.js
 sed -E "s|193.196.29.24:3010|${HOST}:${PORT}|g" Schematize/src/ViewportInputsStore2.js > Schematize/src/ViewportInputsStore1.js
 mv Schematize/src/ViewportInputsStore1.js Schematize/src/ViewportInputsStore.js
 cd Schematize
