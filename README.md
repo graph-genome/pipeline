@@ -59,7 +59,8 @@ You can change the options on odgi / Schematize.
 * `-w`: the bin width on `odgi` (optional, default: `1000`)
 * `-s`: the sort option on `odgi sort` (optional, default: `bSnSnS`)
 * `-t`: the threads option on `odgi` (optional, default: `12`)
-* `-c`: the cells-per-file option on `component_segmentation` (optional) 
+* `-c`: the cells-per-file option on `component_segmentation` (optional)
+* `-i`: the host of `odgi index` (optional, default: `localhost`)
 
 The full list of the argument is as follows:
 

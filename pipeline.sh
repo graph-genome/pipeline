@@ -13,7 +13,7 @@ function usage
   echo "  -c | --cells-per-file : Cells per file on component_segmentation";
   echo "  -t | --threads        : Threads on odgi";
   echo "  -p | --port           : Pathindex port";
-  echo "  -h | --host           : Pathindex host";
+  echo "  -i | --host           : Pathindex host";
   echo "  -h | --help           : This message";
 }
 
