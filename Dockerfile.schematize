@@ -1,0 +1,15 @@
+FROM python:slim
+
+WORKDIR /usr/src/app
+
+RUN apt-get update && apt-get install -y git nodejs npm bash cmake make g++ time 
+
+RUN git clone --depth=1 https://github.com/graph-genome/Schematize
+
+RUN cd Schematize && npm install
+
+ADD . .
+
+EXPOSE 3000
+
+ENTRYPOINT ["pipeline.sh"]

@@ -6,12 +6,15 @@ function usage
 {
   echo "usage: pipeline.sh GFA_FILE [-b 00 -e 01 -s bSnSnS -w 1000 -t 12 -h]"
   echo "   ";
-  echo "  -b | --begin   : The start bin";
-  echo "  -e | --end     : The end bin";
-  echo "  -s | --sort    : Sort option on odgi";
-  echo "  -w | --width   : Bin width on odgi";
-  echo "  -t | --threads : Threads on odgi";
-  echo "  -h | --help    : This message";
+# echo "  -b | --begin          : The start bin";
+# echo "  -e | --end            : The end bin";
+  echo "  -s | --sort           : Sort option on odgi";
+  echo "  -w | --width          : Bin width on odgi";
+  echo "  -c | --cells-per-file : Cells per file on component_segmentation";
+  echo "  -t | --threads        : Threads on odgi";
+  echo "  -p | --port           : Pathindex port";
+  echo "  -i | --host           : Pathindex host";
+  echo "  -h | --help           : This message";
 }
 
 function parse_args
@@ -22,11 +25,14 @@ function parse_args
   # named args
   while [ "$1" != "" ]; do
       case "$1" in
-          -b | --begin )                begin_bin="$2";          shift;;
-          -e | --end )                  end_bin="$2";            shift;;
+#         -b | --begin )                begin_bin="$2";          shift;;
+#         -e | --end )                  end_bin="$2";            shift;;
           -s | --sort )                 sort_opt="$2";           shift;;
           -w | --width )                width_opt="$2";          shift;;
+          -c | --cells-per-file )       cpf="$2";                shift;;
           -t | --threads )              threads_opt="$2";        shift;;
+          -p | --port )                 port="$2";               shift;;
+          -i | --host )                 host="$2";               shift;;
           -h | --help )                 usage;                   exit;; # quit and show usage
           * )                           args+=("$1")             # if no match, add it to the positional args
       esac
@@ -53,11 +59,15 @@ ODGI=odgi
 GFA=$gfa_path 
 OG=${GFA%.gfa}.og
 SOG=${GFA%.gfa}.sorted.og
+XP=${GFA%.gfa}.og.xp
+PORT=${port:-3010}
 THREADS=${threads_opt:-12}
 w=${width_opt:-1000}
-STARTCHUNK=${begin_bin:-00}
-ENDCHUNK=${end_bin:-01}
+#STARTCHUNK=${begin_bin:-00}
+#ENDCHUNK=${end_bin:-01}
+CPF=${cpf:-${ENDCHUNK}}
 SORT=${sort_opt:-bSnSnS}
+HOST=${host:-localhost}
 
 echo "### bin-width: ${w}"
 echo "### chunk: ${STARTCHUNK}--${ENDCHUNK}"
@@ -119,6 +129,22 @@ if [ ! -f $BIN ]; then
   exit 255
 fi
 
+## Create path index
+echo "### odgi pathindex"
+BLDPREF=${GFA%.gfa}_05_pathindex
+/usr/bin/time -v -o ${BLDPREF}.time \
+ionice -c2 -n7 \
+$ODGI pathindex \
+--idx=$OG \
+--out=$XP \
+> ${BLDPREF}.log 2>&1
+
+if [ ! -f $XP ]; then
+  echo "### odgi pathindex failed"
+  exit 255
+fi
+
+
 ## Run component segmentation
 echo "### component segmentation"
 SEGPREF=${GFA%.gfa}.seg
@@ -132,21 +158,25 @@ cd component_segmentation
 export PYTHONPATH=`pwd`:PYTHONPATH 
 /usr/bin/time -v -o ../${SEGPREF}.time \
 ionice -c2 -n7 \
-python3 matrixcomponent/segmentation.py -j ../${BIN} --cells-per-file $((ENDCHUNK+1)) -o ../${SEGPREF} \
+python3 matrixcomponent/segmentation.py -j ../${BIN} --cells-per-file ${CPF} -o ../${SEGPREF} \
 > ../${SEGPREF}.log 2>&1
 cd ..
 
-NOF=$(ls ${GFA%.gfa}.w${w}/*.schematic.json | wc -l)
+NOF=$(ls ${GFA%.gfa}.seg/*.schematic.json | wc -l)
 
 if [ $NOF -lt 1 ]; then
   echo "### component segmentation failed"
   exit 255
 fi
 
+## Run PathIndex Server
+echo "### PathIndex Server"
+
+$ODGI server -i $XP -p 3010 -a "0.0.0.0" &
+
 ## Run Schematize
 echo "### Schematize"
-#SCHEMATICBIN=${GFA%.gfa}.w${w}/chunk0000_bin${w}.schematic.json
-SCHEMATIC=${GFA%.gfa}.w${w}
+SCHEMATIC=${GFA%.gfa}.seg
 if [ ! -d "Schematize" ]; then
   git clone --depth 1 https://github.com/graph-genome/Schematize
   cd Schematize
@@ -154,12 +184,14 @@ if [ ! -d "Schematize" ]; then
   cd ..
 fi
 cp -r ${SCHEMATIC} Schematize/public/test_data
+STARTCHUNK=`jq -r .files[0].file ${SCHEMATIC}/bin2file.json`
+ENDCHUNK=`jq -r .files[-1].file ${SCHEMATIC}/bin2file.json`
 BASENAME=`basename ${SCHEMATIC}`
-#sed -E "s|run1.B1phi1.i1.seqwish.w100.schematic.json|${BASENAME}|g" Schematize/src/PangenomeSchematic.js > Schematize/src/PangenomeSchematic2.js
-sed -E "s|Athaliana_12_individuals_w100000/chunk00_bin100000.schematic.json|${BASENAME}/chunk${STARTCHUNK}_bin${w}.schematic.json|g" Schematize/src/ViewportInputsStore.js > Schematize/src/ViewportInputsStore3.js 
-sed -E "s|Athaliana_12_individuals_w100000/chunk01_bin100000.schematic.json|${BASENAME}/chunk${ENDCHUNK}_bin${w}.schematic.json|g" Schematize/src/ViewportInputsStore3.js > Schematize/src/ViewportInputsStore4.js 
-sed -E "s|Athaliana_12_individuals_w100000|${BASENAME}|g" Schematize/src/ViewportInputsStore4.js > Schematize/src/ViewportInputsStore2.js
-mv Schematize/src/ViewportInputsStore2.js Schematize/src/ViewportInputsStore.js
+sed -E "s|run1.B1phi1.i1.seqwish.w100/chunk0_bin100.schematic.json|${BASENAME}/${STARTCHUNK}|g" Schematize/src/ViewportInputsStore.js > Schematize/src/ViewportInputsStore3.js 
+sed -E "s|run1.B1phi1.i1.seqwish.w100/chunk1_bin100.schematic.json|${BASENAME}/${ENDCHUNK}|g" Schematize/src/ViewportInputsStore3.js > Schematize/src/ViewportInputsStore4.js 
+sed -E "s|run1.B1phi1.i1.seqwish.w100|${BASENAME}|g" Schematize/src/ViewportInputsStore4.js > Schematize/src/ViewportInputsStore2.js
+sed -E "s|193.196.29.24:3010|${HOST}:${PORT}|g" Schematize/src/ViewportInputsStore2.js > Schematize/src/ViewportInputsStore1.js
+mv Schematize/src/ViewportInputsStore1.js Schematize/src/ViewportInputsStore.js
 cd Schematize
 npm run-script build
 npm run start 

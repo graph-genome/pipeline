@@ -1,0 +1,15 @@
+FROM python:slim
+
+WORKDIR /usr/src/app
+
+RUN apt-get update && apt-get install -y git nodejs npm bash cmake make g++ time 
+
+RUN git clone --recursive https://github.com/vgteam/odgi.git
+
+RUN cd odgi && cmake -H. -Bbuild && cmake --build build -- -j 3
+
+ENV PATH $PATH:/usr/src/app/:/usr/src/app/odgi/bin/
+
+EXPOSE 3010
+
+ENTRYPOINT ["odgi", "server", "-p", "3010", "-a", "0.0.0.0", "-i"]

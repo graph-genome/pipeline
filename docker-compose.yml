@@ -1,0 +1,26 @@
+version: '2.2'
+services:
+  schematize:
+    ports:
+     - "3000:3000"
+    dockerfile: Dockerfile.schematize
+    volumes:
+     - "./:/data" 
+    links:
+     - odgi:odgi
+    networks:
+     - server
+    command:
+     - "data/data.og" 
+  odgi:
+    ports:
+     - "3010:3010"    
+    dockerfile: Dockerfile.odgi
+    volumes:
+     - "./:/data" 
+    networks:
+     - server
+    command:
+     - "data/data.og.xg" 
+networks:
+  server:
