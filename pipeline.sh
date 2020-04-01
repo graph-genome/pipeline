@@ -70,7 +70,6 @@ SORT=${sort_opt:-bSnSnS}
 HOST=${host:-localhost}
 
 echo "### bin-width: ${w}"
-echo "### chunk: ${STARTCHUNK}--${ENDCHUNK}"
 echo "### sort-option: ${SORT}"
 
 ## Build the sparse matrix form of the gfa graph
