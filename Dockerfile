@@ -22,6 +22,8 @@ RUN git clone --depth=1 https://github.com/graph-genome/Schematize
 
 RUN cd Schematize && npm install
 
+RUN npm install -g serve
+
 ADD . .
 
 EXPOSE 3000

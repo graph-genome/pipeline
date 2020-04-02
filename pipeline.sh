@@ -70,7 +70,6 @@ SORT=${sort_opt:-bSnSnS}
 HOST=${host:-localhost}
 
 echo "### bin-width: ${w}"
-echo "### chunk: ${STARTCHUNK}--${ENDCHUNK}"
 echo "### sort-option: ${SORT}"
 
 ## Build the sparse matrix form of the gfa graph
@@ -158,7 +157,7 @@ cd component_segmentation
 export PYTHONPATH=`pwd`:PYTHONPATH 
 /usr/bin/time -v -o ../${SEGPREF}.time \
 ionice -c2 -n7 \
-python3 matrixcomponent/segmentation.py -j ../${BIN} --cells-per-file ${CPF} -o ../${SEGPREF} \
+python3 segmentation.py -j ../${BIN} --cells-per-file ${CPF} -o ../${SEGPREF} \
 > ../${SEGPREF}.log 2>&1
 cd ..
 
@@ -194,4 +193,4 @@ sed -E "s|193.196.29.24:3010|${HOST}:${PORT}|g" Schematize/src/ViewportInputsSto
 mv Schematize/src/ViewportInputsStore1.js Schematize/src/ViewportInputsStore.js
 cd Schematize
 npm run-script build
-npm run start 
+serve -s build -p 3000
