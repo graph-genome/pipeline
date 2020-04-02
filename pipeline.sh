@@ -157,7 +157,7 @@ cd component_segmentation
 export PYTHONPATH=`pwd`:PYTHONPATH 
 /usr/bin/time -v -o ../${SEGPREF}.time \
 ionice -c2 -n7 \
-python3 matrixcomponent/segmentation.py -j ../${BIN} --cells-per-file ${CPF} -o ../${SEGPREF} \
+python3 segmentation.py -j ../${BIN} --cells-per-file ${CPF} -o ../${SEGPREF} \
 > ../${SEGPREF}.log 2>&1
 cd ..
 
