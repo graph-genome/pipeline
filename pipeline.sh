@@ -193,5 +193,4 @@ sed -E "s|193.196.29.24:3010|${HOST}:${PORT}|g" Schematize/src/ViewportInputsSto
 mv Schematize/src/ViewportInputsStore1.js Schematize/src/ViewportInputsStore.js
 cd Schematize
 npm run-script build
-cd public
-python -m http.server 3000
+serve -s build -p 3000
