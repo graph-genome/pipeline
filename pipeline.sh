@@ -9,7 +9,9 @@ function usage
 # echo "  -b | --begin          : The start bin";
 # echo "  -e | --end            : The end bin";
   echo "  -s | --sort           : Sort option on odgi";
-  echo "  -w | --width          : Bin width on odgi";
+  echo "  -l | --min-width      : Minimum bin width on odgi";
+  echo "  -z | --interval       : Interval bin width of zoom level on odgi";
+  echo "  -u | --max-width      : Maximum bin width on odgi";
   echo "  -c | --cells-per-file : Cells per file on component_segmentation";
   echo "  -t | --threads        : Threads on odgi";
   echo "  -p | --port           : Pathindex port";
@@ -109,7 +111,7 @@ if [ ! -f $SOG ]; then
   exit 255
 fi
 
-##
+## Build binning
 echo "### odgi bin"
 BIN=${GFA%.gfa}.w${w}.json
 BINPREF=${GFA%.gfa}_04_bin_w${w}
