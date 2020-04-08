@@ -154,6 +154,7 @@ if [ ! -d "component_segmentation" ]; then
   git clone --depth 1 https://github.com/graph-genome/component_segmentation
 fi
 cd component_segmentation
+pip3 install -r requirements.txt
 export PYTHONPATH=`pwd`:PYTHONPATH 
 /usr/bin/time -v -o ../${SEGPREF}.time \
 ionice -c2 -n7 \

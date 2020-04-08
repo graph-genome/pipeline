@@ -68,4 +68,12 @@ The full list of the argument is as follows:
 docker run -ti --rm --publish=3000:3000 --volume=`pwd`:/usr/src/app/data pipeline -h
 ```
 
+## Support Development
 
+```bash
+git clone https://github.com/graph-genome/component_segmentation # For debugging component_segmentation
+git clone https://github.com/graph-genome/Schematize # For debugging Schematize
+docker run -d --publish=3000:3000 --publish=3010:3010 --volume=`pwd`:/usr/src/app/data --volume=`pwd`/Schematize:/usr/src/app/Schematize --volume=`pwd`/component_segmentation:/usr/src/app/component_segmentation pipeline data/data.gfa -w 1000 -s s -c 10000
+```
+
+Then, the pipeline is running through cloned component_segmentation and Schematize. Docker container is failed, but the output json file is stored on Schematize directory. Therefore just run `yarn start` on `Schematize` directory works.
