@@ -33,7 +33,7 @@ Pathindex server works on the same container of Schematize at port 3010. Users n
 
 ```bash
 docker run -ti --rm \
-  --publish=3000:3000 \ # For Schematize server 
+  --publish=3000:3000 \ # For Schematize server
   --publish=3010:3010 \ # For odgi server (*)
   --volume=`pwd`:/usr/src/app/data pipeline data/data.gfa -w 10000 -s Sn \
   --port 3010 \ # The host's port to expose the odgi server, the same as the host port of (*).
