@@ -162,7 +162,7 @@ python3 segmentation.py -j ../${BIN} --cells-per-file ${CPF} -o ../${SEGPREF} \
 > ../${SEGPREF}.log 2>&1
 cd ..
 
-NOF=$(ls ${GFA%.gfa}.seg/*.schematic.json | wc -l)
+NOF=$(ls ${GFA%.gfa}.seg/${w}/*.schematic.json | wc -l)
 
 if [ $NOF -lt 1 ]; then
   echo "### component segmentation failed"
