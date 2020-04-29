@@ -56,7 +56,8 @@ function parse_args
 parse_args "$@"
 
 ODGI=odgi
-GFA=$gfa_path 
+GFA=$gfa_path
+FASTA=${GFA%.gfa}.fasta
 OG=${GFA%.gfa}.og
 SOG=${GFA%.gfa}.sorted.og
 XP=${GFA%.gfa}.og.xp
@@ -111,22 +112,26 @@ fi
 
 ##
 echo "### odgi bin"
-BIN=${GFA%.gfa}.w${w}.json
-BINPREF=${GFA%.gfa}_04_bin_w${w}
-SRTPREF=${GFA%.gfa}_03_bin
-/usr/bin/time -v -o ${SRTPREF}.time \
-ionice -c2 -n7 \
-$ODGI bin \
---json \
---idx=$SOG \
---bin-width=${w} \
-1> $BIN \
-2> ${BINPREF}.log
+for w in 1 4 16 64; do
+	BIN=${GFA%.gfa}.w${w}.json
+	echo $BIN
+	BINPREF=${0%.sh}_04_bin_w${w}
+	/usr/bin/time -v -o ${BINPREF}.time \
+	ionice -c2 -n7 \
+	$ODGI bin \
+	--json \
+	--idx=$SOG \
+	--bin-width=${w} \
+	--fasta $FASTA \
+	1> $BIN \
+	2> ${BINPREF}.log &
 
-if [ ! -f $BIN ]; then
+	if [ ! -f $BIN ]; then
   echo "### odgi bin failed"
   exit 255
-fi
+  fi
+done
+echo "Done outputting bin and fasta."
 
 ## Create path index
 echo "### odgi pathindex"
@@ -147,6 +152,7 @@ fi
 ## Run component segmentation
 echo "### component segmentation"
 SEGPREF=${GFA%.gfa}.seg
+
 if [ ! -d "${GFA%.gfa}.seg" ]; then
   mkdir ${GFA%.gfa}.seg
 fi
@@ -158,16 +164,17 @@ pip3 install -r requirements.txt
 export PYTHONPATH=`pwd`:PYTHONPATH 
 /usr/bin/time -v -o ../${SEGPREF}.time \
 ionice -c2 -n7 \
-python3 segmentation.py -j ../${BIN} --cells-per-file ${CPF} -o ../${SEGPREF} \
+python3 segmentation.py -j ../${GFA%.gfa}'*' -f ../${FASTA} --cells-per-file ${CPF} -o ../${SEGPREF} \
 > ../${SEGPREF}.log 2>&1
 cd ..
 
-NOF=$(ls ${GFA%.gfa}.seg/${w}/*.schematic.json | wc -l)
-
-if [ $NOF -lt 1 ]; then
-  echo "### component segmentation failed"
-  exit 255
-fi
+for w in 1 4 16 64; do
+    NOF=$(ls ${GFA%.gfa}.seg/${w}/*.schematic.json | wc -l)
+    if [ $NOF -lt 1 ]; then
+      echo "### component segmentation failed"
+      exit 255
+    fi
+done
 
 ## Run PathIndex Server
 echo "### PathIndex Server"
@@ -184,8 +191,10 @@ if [ ! -d "Schematize" ]; then
   cd ..
 fi
 cp -r ${SCHEMATIC} Schematize/public/test_data
-STARTCHUNK=`jq -r .files[0].file ${SCHEMATIC}/bin2file.json`
-ENDCHUNK=`jq -r .files[-1].file ${SCHEMATIC}/bin2file.json`
+STARTCHUNK=`jq -r .zoom_levels.files[0].file ${SCHEMATIC}/bin2file.json`
+echo $STARTCHUNK
+ENDCHUNK=`jq -r .zoom_levels.files[-1].file ${SCHEMATIC}/bin2file.json`
+echo $ENDCHUNK
 BASENAME=`basename ${SCHEMATIC}`
 sed -E "s|run1.B1phi1.i1.seqwish.w100/chunk0_bin100.schematic.json|${BASENAME}/${STARTCHUNK}|g" Schematize/src/ViewportInputsStore.js > Schematize/src/ViewportInputsStore3.js 
 sed -E "s|run1.B1phi1.i1.seqwish.w100/chunk1_bin100.schematic.json|${BASENAME}/${ENDCHUNK}|g" Schematize/src/ViewportInputsStore3.js > Schematize/src/ViewportInputsStore4.js 
