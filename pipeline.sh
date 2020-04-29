@@ -191,14 +191,12 @@ if [ ! -d "Schematize" ]; then
   cd ..
 fi
 cp -r ${SCHEMATIC} Schematize/public/test_data
-STARTCHUNK=`jq -r .zoom_levels.files[0].file ${SCHEMATIC}/bin2file.json`
-echo $STARTCHUNK
-ENDCHUNK=`jq -r .zoom_levels.files[-1].file ${SCHEMATIC}/bin2file.json`
-echo $ENDCHUNK
+STARTCHUNK=`jq -r '.zoom_levels["64"]["files"][0]'.file ${SCHEMATIC}/bin2file.json`
+ENDCHUNK=`jq -r '.zoom_levels["64"]["files"][-1]'.file ${SCHEMATIC}/bin2file.json`
 BASENAME=`basename ${SCHEMATIC}`
-sed -E "s|run1.B1phi1.i1.seqwish.w100/chunk0_bin100.schematic.json|${BASENAME}/${STARTCHUNK}|g" Schematize/src/ViewportInputsStore.js > Schematize/src/ViewportInputsStore3.js 
-sed -E "s|run1.B1phi1.i1.seqwish.w100/chunk1_bin100.schematic.json|${BASENAME}/${ENDCHUNK}|g" Schematize/src/ViewportInputsStore3.js > Schematize/src/ViewportInputsStore4.js 
-sed -E "s|run1.B1phi1.i1.seqwish.w100|${BASENAME}|g" Schematize/src/ViewportInputsStore4.js > Schematize/src/ViewportInputsStore2.js
+sed -E "s|run1.B1phi1.i1.seqwish/chunk0_bin100.schematic.json|${BASENAME}/${STARTCHUNK}|g" Schematize/src/ViewportInputsStore.js > Schematize/src/ViewportInputsStore3.js
+sed -E "s|run1.B1phi1.i1.seqwish/chunk1_bin100.schematic.json|${BASENAME}/${ENDCHUNK}|g" Schematize/src/ViewportInputsStore3.js > Schematize/src/ViewportInputsStore4.js
+sed -E "s|run1.B1phi1.i1.seqwish|${BASENAME}|g" Schematize/src/ViewportInputsStore.js > Schematize/src/ViewportInputsStore2.js
 sed -E "s|193.196.29.24:3010|${HOST}:${PORT}|g" Schematize/src/ViewportInputsStore2.js > Schematize/src/ViewportInputsStore1.js
 mv Schematize/src/ViewportInputsStore1.js Schematize/src/ViewportInputsStore.js
 cd Schematize
