@@ -1,0 +1,3 @@
+pangenome:
+  type: File
+  location: keep:lugli-4zz18-z513nlpqm03hpca/readsMergeDedup.gfa
