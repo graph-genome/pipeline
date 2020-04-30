@@ -6,8 +6,6 @@ function usage
 {
   echo "usage: pipeline.sh GFA_FILE [-b 00 -e 01 -s bSnSnS -w 1000 -t 12 -h]"
   echo "   ";
-# echo "  -b | --begin          : The start bin";
-# echo "  -e | --end            : The end bin";
   echo "  -s | --sort           : Sort option on odgi";
   echo "  -w | --width          : Bin width on odgi";
   echo "  -c | --cells-per-file : Cells per file on component_segmentation";
@@ -25,10 +23,7 @@ function parse_args
   # named args
   while [ "$1" != "" ]; do
       case "$1" in
-#         -b | --begin )                begin_bin="$2";          shift;;
-#         -e | --end )                  end_bin="$2";            shift;;
           -s | --sort )                 sort_opt="$2";           shift;;
-          -w | --width )                width_opt="$2";          shift;;
           -c | --cells-per-file )       cpf="$2";                shift;;
           -t | --threads )              threads_opt="$2";        shift;;
           -p | --port )                 port="$2";               shift;;
@@ -63,14 +58,14 @@ SOG=${GFA%.gfa}.sorted.og
 XP=${GFA%.gfa}.og.xp
 PORT=${port:-3010}
 THREADS=${threads_opt:-12}
-w=${width_opt:-1000}
+w="$w"
 #STARTCHUNK=${begin_bin:-00}
 #ENDCHUNK=${end_bin:-01}
 CPF=${cpf:-100}
 SORT=${sort_opt:-bSnSnS}
 HOST=${host:-localhost}
 
-echo "### bin-width: ${w}"
+
 echo "### sort-option: ${SORT}"
 
 ## Build the sparse matrix form of the gfa graph
@@ -112,9 +107,8 @@ fi
 
 ##
 echo "### odgi bin"
-for w in 1 4 16 64; do
+for w in 1 4 16 64 256 1000 4000 16000; do
 	BIN=${GFA%.gfa}.w${w}.json
-	echo $BIN
 	BINPREF=${0%.sh}_04_bin_w${w}
 	/usr/bin/time -v -o ${BINPREF}.time \
 	ionice -c2 -n7 \
@@ -168,7 +162,7 @@ python3 segmentation.py -j ../${GFA%.gfa}'*' -f ../${FASTA} --cells-per-file ${C
 > ../${SEGPREF}.log 2>&1
 cd ..
 
-for w in 1 4 16 64; do
+for w in 1 4 16 64 256 1000 4000 16000; do
     NOF=$(ls ${GFA%.gfa}.seg/${w}/*.schematic.json | wc -l)
     if [ $NOF -lt 1 ]; then
       echo "### component segmentation failed"
@@ -185,17 +179,14 @@ $ODGI server -i $XP -p 3010 -a "0.0.0.0" &
 echo "### Schematize"
 SCHEMATIC=${GFA%.gfa}.seg
 if [ ! -d "Schematize" ]; then
-  git clone --depth 1 -b i22_chunk_URL_array https://github.com/graph-genome/Schematize
+  git clone --depth 1 https://github.com/graph-genome/Schematize
   cd Schematize
   npm install
   cd ..
 fi
 cp -r ${SCHEMATIC} Schematize/public/test_data
-# STARTCHUNK=`jq -r '.zoom_levels["64"]["files"][0]'.file ${SCHEMATIC}/bin2file.json`
-# ENDCHUNK=`jq -r '.zoom_levels["64"]["files"][-1]'.file ${SCHEMATIC}/bin2file.json`
+
 BASENAME=`basename ${SCHEMATIC}`
-# sed -E "s|run1.B1phi1.i1.seqwish/chunk0_bin100.schematic.json|${BASENAME}/${STARTCHUNK}|g" Schematize/src/ViewportInputsStore.js > Schematize/src/ViewportInputsStore3.js
-# sed -E "s|run1.B1phi1.i1.seqwish/chunk1_bin100.schematic.json|${BASENAME}/${ENDCHUNK}|g" Schematize/src/ViewportInputsStore3.js > Schematize/src/ViewportInputsStore4.js
 sed -E "s|run1.B1phi1.i1.seqwish|${BASENAME}|g" Schematize/src/ViewportInputsStore.js > Schematize/src/ViewportInputsStore2.js
 sed -E "s|193.196.29.24:3010|${HOST}:${PORT}|g" Schematize/src/ViewportInputsStore2.js > Schematize/src/ViewportInputsStore1.js
 mv Schematize/src/ViewportInputsStore1.js Schematize/src/ViewportInputsStore.js
