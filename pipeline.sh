@@ -66,7 +66,7 @@ THREADS=${threads_opt:-12}
 w=${width_opt:-1000}
 #STARTCHUNK=${begin_bin:-00}
 #ENDCHUNK=${end_bin:-01}
-CPF=${cpf:-${ENDCHUNK}}
+CPF=${cpf:-100}
 SORT=${sort_opt:-bSnSnS}
 HOST=${host:-localhost}
 
@@ -124,7 +124,7 @@ for w in 1 4 16 64; do
 	--bin-width=${w} \
 	--fasta $FASTA \
 	1> $BIN \
-	2> ${BINPREF}.log &
+	2> ${BINPREF}.log
 
 	if [ ! -f $BIN ]; then
   echo "### odgi bin failed"
@@ -185,17 +185,17 @@ $ODGI server -i $XP -p 3010 -a "0.0.0.0" &
 echo "### Schematize"
 SCHEMATIC=${GFA%.gfa}.seg
 if [ ! -d "Schematize" ]; then
-  git clone --depth 1 https://github.com/graph-genome/Schematize
+  git clone --depth 1 -b i22_chunk_URL_array https://github.com/graph-genome/Schematize
   cd Schematize
   npm install
   cd ..
 fi
 cp -r ${SCHEMATIC} Schematize/public/test_data
-STARTCHUNK=`jq -r '.zoom_levels["64"]["files"][0]'.file ${SCHEMATIC}/bin2file.json`
-ENDCHUNK=`jq -r '.zoom_levels["64"]["files"][-1]'.file ${SCHEMATIC}/bin2file.json`
+# STARTCHUNK=`jq -r '.zoom_levels["64"]["files"][0]'.file ${SCHEMATIC}/bin2file.json`
+# ENDCHUNK=`jq -r '.zoom_levels["64"]["files"][-1]'.file ${SCHEMATIC}/bin2file.json`
 BASENAME=`basename ${SCHEMATIC}`
-sed -E "s|run1.B1phi1.i1.seqwish/chunk0_bin100.schematic.json|${BASENAME}/${STARTCHUNK}|g" Schematize/src/ViewportInputsStore.js > Schematize/src/ViewportInputsStore3.js
-sed -E "s|run1.B1phi1.i1.seqwish/chunk1_bin100.schematic.json|${BASENAME}/${ENDCHUNK}|g" Schematize/src/ViewportInputsStore3.js > Schematize/src/ViewportInputsStore4.js
+# sed -E "s|run1.B1phi1.i1.seqwish/chunk0_bin100.schematic.json|${BASENAME}/${STARTCHUNK}|g" Schematize/src/ViewportInputsStore.js > Schematize/src/ViewportInputsStore3.js
+# sed -E "s|run1.B1phi1.i1.seqwish/chunk1_bin100.schematic.json|${BASENAME}/${ENDCHUNK}|g" Schematize/src/ViewportInputsStore3.js > Schematize/src/ViewportInputsStore4.js
 sed -E "s|run1.B1phi1.i1.seqwish|${BASENAME}|g" Schematize/src/ViewportInputsStore.js > Schematize/src/ViewportInputsStore2.js
 sed -E "s|193.196.29.24:3010|${HOST}:${PORT}|g" Schematize/src/ViewportInputsStore2.js > Schematize/src/ViewportInputsStore1.js
 mv Schematize/src/ViewportInputsStore1.js Schematize/src/ViewportInputsStore.js
