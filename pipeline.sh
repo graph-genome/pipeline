@@ -59,8 +59,6 @@ XP=${GFA%.gfa}.og.xp
 PORT=${port:-3010}
 THREADS=${threads_opt:-12}
 w="$w"
-#STARTCHUNK=${begin_bin:-00}
-#ENDCHUNK=${end_bin:-01}
 CPF=${cpf:-100}
 SORT=${sort_opt:-bSnSnS}
 HOST=${host:-localhost}
@@ -78,7 +76,6 @@ $ODGI build \
 --gfa=$GFA \
 --out=$OG \
 > ${BLDPREF}.log 2>&1
-#--sort \
 
 if [ ! -f $OG ]; then
   echo "### odgi build failed"
