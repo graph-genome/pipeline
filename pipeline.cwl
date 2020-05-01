@@ -25,23 +25,23 @@ steps:
       graph: pangenome
     out: [ sparse_graph_index ]
 
-  sort_paths:
-    label: Sort paths by 1D sorting
-    run: tools/odgi/odgi_sort.cwl
-    in:
-      pipeline_specification:
-        default: "bSnSnS"
-      sparse_graph_index: build_sparse_matrix_graph/sparse_graph_index
-      sgd_use_paths:
-        default: true
-      sort_paths_max:
-        default: true
-    out: [ sorted_sparse_graph_index ]
+  # sort_paths:
+  #   label: Sort paths by 1D sorting
+  #   run: tools/odgi/odgi_sort.cwl
+  #   in:
+  #     pipeline_specification:
+  #       default: "bSnSnS"
+  #     sparse_graph_index: build_sparse_matrix_graph/sparse_graph_index
+  #     sgd_use_paths:
+  #       default: true
+  #     sort_paths_max:
+  #       default: true
+  #   out: [ sorted_sparse_graph_index ]
 
   bin_paths:
     run: tools/odgi/odgi_bin.cwl
     in:
-      sparse_graph_index: sort_paths/sorted_sparse_graph_index
+      sparse_graph_index: build_sparse_matrix_graph/sparse_graph_index
       bin_width: bin_width
     out: [ bins ] 
 
@@ -49,7 +49,7 @@ steps:
     label: Create path index
     run : tools/odgi/odgi_pathindex.cwl
     in:
-      sparse_graph_index: sort_paths/sorted_sparse_graph_index
+      sparse_graph_index: build_sparse_matrix_graph/sparse_graph_index
     out: [ indexed_paths ] 
 
   segment_components:
@@ -66,5 +66,5 @@ outputs:
     outputSource: index_paths/indexed_paths
 
   colinear_components:
-    type: File
+    type: File[]
     outputSource: segment_components/colinear_components
