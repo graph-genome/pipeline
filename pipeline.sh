@@ -4,10 +4,9 @@ set -e # abort on error
 
 function usage
 {
-  echo "usage: pipeline.sh GFA_FILE [-b 00 -e 01 -s bSnSnS -w 1000 -t 12 -h]"
+  echo "usage: pipeline.sh GFA_FILE [-b 00 -e 01 -s bSnSnS -t 12 -h]"
   echo "   ";
   echo "  -s | --sort           : Sort option on odgi";
-  echo "  -w | --width          : Bin width on odgi";
   echo "  -c | --cells-per-file : Cells per file on component_segmentation";
   echo "  -t | --threads        : Threads on odgi";
   echo "  -p | --port           : Pathindex port";
@@ -59,6 +58,7 @@ XP=${GFA%.gfa}.og.xp
 PORT=${port:-3010}
 THREADS=${threads_opt:-12}
 w="$w"
+width_array=(1 4 16 64 256 1000 4000 16000)
 CPF=${cpf:-100}
 SORT=${sort_opt:-bSnSnS}
 HOST=${host:-localhost}
@@ -104,7 +104,7 @@ fi
 
 ##
 echo "### odgi bin"
-for w in 1 4 16 64 256 1000 4000 16000; do
+for w in "${width_array[@]}"; do
 	BIN=${GFA%.gfa}.w${w}.json
 	BINPREF=${0%.sh}_04_bin_w${w}
 	/usr/bin/time -v -o ${BINPREF}.time \
@@ -159,7 +159,7 @@ python3 segmentation.py -j ../${GFA%.gfa}'*' -f ../${FASTA} --cells-per-file ${C
 > ../${SEGPREF}.log 2>&1
 cd ..
 
-for w in 1 4 16 64 256 1000 4000 16000; do
+for w in "${width_array[@]}"; do
     NOF=$(ls ${GFA%.gfa}.seg/${w}/*.schematic.json | wc -l)
     if [ $NOF -lt 1 ]; then
       echo "### component segmentation failed"
