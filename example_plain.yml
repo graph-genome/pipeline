@@ -1,0 +1,3 @@
+pangenome:
+  class: File
+  location: https://workbench.lugli.arvadosapi.com/collections/2a91d4d78e99ce298b380799f5aeae87+579/readsMergeDedup.gfa?disposition=attachment&size=19350732
