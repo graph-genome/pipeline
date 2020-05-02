@@ -4,10 +4,11 @@ set -e # abort on error
 
 function usage
 {
-  echo "usage: pipeline.sh GFA_FILE [-b 00 -e 01 -s bSnSnS -t 12 -h]"
+  echo "usage: pipeline.sh GFA_FILE [-b 00 -e 01 -s bSnSnS -w 4,16,64 -t 12 -h]"
   echo "   ";
   echo "  -s | --sort           : Sort option on odgi";
   echo "  -c | --cells-per-file : Cells per file on component_segmentation";
+  echo "  -w | --width          : Bin width for each zoom layer on odgi";
   echo "  -t | --threads        : Threads on odgi";
   echo "  -p | --port           : Pathindex port";
   echo "  -i | --host           : Pathindex host";
@@ -25,6 +26,7 @@ function parse_args
           -s | --sort )                 sort_opt="$2";           shift;;
           -c | --cells-per-file )       cpf="$2";                shift;;
           -t | --threads )              threads_opt="$2";        shift;;
+          -w | --width )                width_opt="$2";          shift;;
           -p | --port )                 port="$2";               shift;;
           -i | --host )                 host="$2";               shift;;
           -h | --help )                 usage;                   exit;; # quit and show usage
@@ -57,14 +59,17 @@ SOG=${GFA%.gfa}.sorted.og
 XP=${GFA%.gfa}.og.xp
 PORT=${port:-3010}
 THREADS=${threads_opt:-12}
+width_array=(${width_opt//,/ })
+if [ ${#width_array[@]} -eq 0 ]; then
+  width_array=(1 4 16 64 256 1000 4000 16000)
+fi
 w="$w"
-width_array=(1 4 16 64 256 1000 4000 16000)
 CPF=${cpf:-100}
 SORT=${sort_opt:-bSnSnS}
 HOST=${host:-localhost}
 
-
 echo "### sort-option: ${SORT}"
+echo "### width-option: ${width_array[@]}"
 
 ## Build the sparse matrix form of the gfa graph
 echo "### odgi build"
@@ -155,7 +160,7 @@ pip3 install -r requirements.txt
 export PYTHONPATH=`pwd`:PYTHONPATH 
 /usr/bin/time -v -o ../${SEGPREF}.time \
 ionice -c2 -n7 \
-python3 segmentation.py -j ../${GFA%.gfa}'*' -f ../${FASTA} --cells-per-file ${CPF} -o ../${SEGPREF} \
+python3 segmentation.py -j ../${GFA%.gfa}'*' -f ../${FASTA} --cells-per-file ${CPF} -o ../${SEGPREF} -p ${THREADS} \
 > ../${SEGPREF}.log 2>&1
 cd ..
 
