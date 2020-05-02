@@ -19,11 +19,11 @@ docker build -t pipeline .
 ```bash
 pip install arvados-cwl-runner
 
-cwltool --cachedir $PWD/cache --parallel pipeline.cwl example_plain.yml
+cwltool --cachedir $PWD/cache --parallel graph-genome-previz.cwl example_plain.yml
 # for local execution
 
 # or
-arvados-cwl-runner pipeline.cwl example_arvados.yml
+arvados-cwl-runner graph-genome-previz.cwl example_arvados.yml
 ```
 
 ### Running on Docker
