@@ -1,6 +1,6 @@
 # pipeline
 
-A pipeline combining [odgi](https://github.com/vgteam/odgi) - [component_segmentation](https://github.com/graph-genome/component_segmentation) - [Schematize](https://github.com/graph-genome/Schematize) on Docker image
+A pipeline combining [odgi](https://github.com/vgteam/odgi) - [component_segmentation](https://github.com/graph-genome/component_segmentation) - [Schematize](https://github.com/graph-genome/Schematize) on Docker image or CWL
 
 ## Installation
 
@@ -14,6 +14,20 @@ docker build -t pipeline .
 
 ## Usage
 
+### Running on CWL on example data
+
+```bash
+pip install arvados-cwl-runner
+
+cwltool --cachedir $PWD/cache --parallel pipeline.cwl example_plain.yml
+# for local execution
+
+# or
+arvados-cwl-runner pipeline.cwl example_arvados.yml
+```
+
+### Running on Docker
+
 Suppose that the input file is "data.gfa".
 
 ```bash
@@ -26,6 +40,8 @@ docker run -ti --rm --publish=3000:3000 --volume=`pwd`:/usr/src/app/data pipelin
 ```
 
 Access to http://localhost:3000/. The production build of Schematize is running.
+
+
 
 ## Running PathIndex Server
 
