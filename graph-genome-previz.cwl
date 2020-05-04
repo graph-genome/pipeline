@@ -8,7 +8,7 @@ requirements:
 
 inputs:
   pangenome:
-    label: GFA1 or GF2 format
+    label: GFA1 or GFA2 format
     type: File
     # format: GFA1 or GFA2
 
