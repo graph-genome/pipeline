@@ -78,5 +78,5 @@ outputs:
     outputSource: index_paths/indexed_paths
 
   colinear_components:
-    type: File[]
+    type: Directory
     outputSource: segment_components/colinear_components
