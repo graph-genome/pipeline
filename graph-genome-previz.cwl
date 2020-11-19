@@ -19,7 +19,7 @@ inputs:
 
   cells_per_file:
     type: int
-    default: 100
+    default: 5000
     doc: Cells per file on component_segmentation
 
 steps:
