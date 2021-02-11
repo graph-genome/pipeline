@@ -12,6 +12,20 @@ cd pipeline
 docker build -t pipeline .
 ```
 
+By default, Schematise will pick up all availabge `.seg` directories (cases) available in the directory where GFA is located. If you ran pipeline on different graphs before and kept the result, it will allow to switch between the cases.
+
+If this befavour is undesirable, before building comment the following block in `pipeline.sh`:
+```
+for fold in `dirname "$GFA"`/*.seg
+  do
+    cp -r $fold Schematize/public/test_data
+  done
+```
+and uncomment the following line:
+```
+# cp -r ${SCHEMATIC} Schematize/public/test_data
+```
+
 ## Usage
 
 ### Running on CWL on example data

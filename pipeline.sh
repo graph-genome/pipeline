@@ -94,7 +94,7 @@ SRTPREF=${GFA%.gfa}_02_sort
 ionice -c2 -n7 \
 $ODGI sort \
 --pipeline="$SORT" \
---sgd-use-paths \
+--path-sgd \
 --paths-max \
 --progress \
 --idx=$OG \
@@ -160,7 +160,7 @@ pip3 install -r requirements.txt
 export PYTHONPATH=`pwd`:PYTHONPATH 
 /usr/bin/time -v -o ../${SEGPREF}.time \
 ionice -c2 -n7 \
-python3 segmentation.py -j ../${GFA%.gfa}'*' -f ../${FASTA} --cells-per-file ${CPF} -o ../${SEGPREF} -p ${THREADS} \
+python3 matrixcomponent/segmentation.py -j ../${GFA%.gfa}'*' -f ../${FASTA} --cells-per-file ${CPF} -o ../${SEGPREF} -p ${THREADS} \
 > ../${SEGPREF}.log 2>&1
 cd ..
 
@@ -186,12 +186,25 @@ if [ ! -d "Schematize" ]; then
   npm install
   cd ..
 fi
-cp -r ${SCHEMATIC} Schematize/public/test_data
+
+# Copying all segmentations available in data folder.
+for fold in `dirname "$GFA"`/*.seg
+  do
+    cp -r $fold Schematize/public/test_data
+  done
+
+# Copying only the last processed pangenome
+# cp -r ${SCHEMATIC} Schematize/public/test_data
 
 BASENAME=`basename ${SCHEMATIC}`
+echo ${BASENAME} # DEBUG
 sed -E "s|run1.B1phi1.i1.seqwish|${BASENAME}|g" Schematize/src/ViewportInputsStore.js > Schematize/src/ViewportInputsStore2.js
-sed -E "s|193.196.29.24:3010|${HOST}:${PORT}|g" Schematize/src/ViewportInputsStore2.js > Schematize/src/ViewportInputsStore1.js
+sed -E "s|193.196.29.24:3010|${HOST}:${PORT}|g" Schematize/src/ViewportInputsStore2.js > Schematize/src/ViewportInputsStore3.js
+sed -E "s|SARS\-CoV\-2\.genbank\.small|${BASENAME}|g" Schematize/src/ViewportInputsStore3.js > Schematize/src/ViewportInputsStore1.js
 mv Schematize/src/ViewportInputsStore1.js Schematize/src/ViewportInputsStore.js
+sed -E 's|graph\-genome\.github\.io\/Schematize|localhost:3000\/|g' Schematize/package.json > Schematize/package1.json
+mv Schematize/package1.json Schematize/package.json
 cd Schematize
+rm -rf build
 npm run-script build
 serve -s build -p 3000
