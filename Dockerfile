@@ -1,4 +1,4 @@
-FROM python:slim
+FROM python:3.8-slim
 
 WORKDIR /usr/src/app
 
@@ -20,9 +20,11 @@ ENV PATH $PATH:/usr/src/app/:/usr/src/app/odgi/bin/
 
 RUN git clone --depth=1 https://github.com/graph-genome/Schematize
 
-RUN cd Schematize && npm install
+RUN cd Schematize && npm install && npx browserslist@latest --update-db
 
 RUN npm install -g serve
+
+RUN cd Schematize && rm -rf public/test_data/*
 
 ADD . .
 
